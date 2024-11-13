@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llista de Tasques</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-md">
+        <!-- Formulario de búsqueda -->
+        <h1 class="text-3xl font-bold text-center my-6">Llista de Tasques</h1>
+
+        
+        <form class="max-w-md mx-auto">   
+            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                </div>
+                <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+            </div>
+        </form>
+
+        <br>
+
+        <div class="bg-white shadow-md rounded p-4">
+            <ul id="task-list">
+                {% for task in tasks %}
+                    <li class="flex justify-between items-center py-2 border-b task-item">
+                        <!-- Cercle per marcar i esborrar la tasca amb efecte hover -->
+                        <form action="{% url 'task_list' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="complete_task_id" value="{{ task.id }}">
+                            <button type="submit" class="mr-4 relative">
+                                <!-- Cercle que es fa verd amb hover i mostra el tick -->
+                                <span class="flex items-center justify-center w-5 h-5 rounded-full border-2 border-gray-500 
+                                             transition duration-200 hover:bg-green-500 hover:border-green-500">
+                                    <!-- Icona de tick de Flowbite que ocupa tot el cercle -->
+                                    
+                                    <svg class="w-full h-full text-transparent transition duration-200 hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                      </svg>
+                                      
+                                </span>
+                            </button>
+                        </form>
+                        <span class="text-lg 'line-through text-gray-500' if task.completed else '' ">{{ task.title }}</span>
+                        <!-- Només el botó d'editar -->
+                        <a href="{% url 'edit_task' task.id %}" class="text-blue-500 hover:underline">Edita</a>
+                    </li>
+                {% empty %}
+                    <p class="text-center text-gray-600">No hi ha tasques per mostrar.</p>
+                {% endfor %}
+            </ul>
+            <div class="mt-4">
+                <a href="{% url 'add_task' %}" class="block text-center text-white bg-blue-500 py-2 rounded">Afegeix Tasca</a>
+            </div>
+        </div>
+    </div>
+
+      
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+</body>
+</html>

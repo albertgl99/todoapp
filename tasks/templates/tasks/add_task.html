@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afegeix Tasca</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center my-6">Afegeix una nova tasca</h1>
+        <form action="{% url 'add_task' %}" method="post" class="bg-white shadow-md rounded p-4">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Nom de la tasca" required
+                   class="w-full p-2 border rounded mb-4">
+            <button type="submit" class="w-full text-white bg-blue-500 py-2 rounded">Afegir</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edita Tasca</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center my-6">Edita la tasca</h1>
+        <form action="{% url 'edit_task' task.id %}" method="post" class="bg-white shadow-md rounded p-4">
+            {% csrf_token %}
+            <input type="text" name="title" value="{{ task.title }}" required
+                   class="w-full p-2 border rounded mb-4">
+            <label class="inline-flex items-center">
+                <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %} class="form-checkbox">
+                <span class="ml-2">Completada</span>
+            </label>
+            <button type="submit" class="w-full text-white bg-blue-500 py-2 rounded mt-4">Guardar</button>
+        </form>
+    </div>
+</body>
+</html>
