@@ -3,18 +3,30 @@ from .models import Task
 from django.http import JsonResponse
 
 def task_list(request):
-    tasks = Task.objects.all()  # Obtenim totes les tasques per defecte
+    # Processa només les peticions AJAX
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        query = request.GET.get('q', '').strip()
+        tasks = Task.objects.filter(title__icontains=query) if query else Task.objects.all()
+        tasks_data = [{'id': task.id, 'title': task.title, 'completed': task.completed} for task in tasks]
+        incomplete_tasks_count = tasks.filter(completed=False).count()
+        return JsonResponse({'tasks': tasks_data})
 
-    # Si es clica el cercle per completar i esborrar la tasca
+    # Processa la pàgina principal si no és AJAX
+    tasks = Task.objects.all()
+    incomplete_tasks_count = tasks.filter(completed=False).count()
+    
     if request.method == 'POST' and 'complete_task_id' in request.POST:
         task_id = request.POST.get('complete_task_id')
         task = get_object_or_404(Task, id=task_id)
-        task.completed = True  # Marca com a completada
+        task.completed = True
         task.save()
-        task.delete()  # Esborra la tasca immediatament després de marcar-la com a completada
+        task.delete()
         return redirect('task_list')
 
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+    return render(request, 'tasks/task_list.html', {
+        'tasks': tasks,
+        'incomplete_tasks_count': incomplete_tasks_count,
+        })
 
 def add_task(request):
     if request.method == 'POST':
@@ -31,4 +43,6 @@ def edit_task(request, task_id):
         task.save()
         return redirect('task_list')
     return render(request, 'tasks/edit_task.html', {'task': task})
+
+
 

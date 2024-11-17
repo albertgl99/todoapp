@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Llista de Tasques</title>
+    <title>Todo App</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-</head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen">
-    <div class="w-full max-w-md">
-        <!-- Formulario de búsqueda -->
-        <h1 class="text-3xl font-bold text-center my-6">Llista de Tasques</h1>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-        
+</head>
+<body class="flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-md shadow-2xl">
+
+        <div class="bg-gradient-to-l from-blue-200 to-blue-500 shadow-md rounded p-4">
+            <!-- Formulario de búsqueda -->
+
+            <h1 class="text-3xl font-bold text-center my-6">Welcome!</h1>
+            <h2 class="text-3xl font-bold text-center my-6">You have {{ incomplete_tasks_count }} incomplete task{{ incomplete_tasks_count|pluralize:"s" }}.
+            </h2>
+        </div>
+    
+    
+    <div class="bg-white shadow-md rounded p-4">
         <form class="max-w-md mx-auto">   
-            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
             <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                </div>
-                <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+                <input type="text" id="search-box" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search your task" required oninput="searchTasks(this.value)" />
             </div>
         </form>
-
+    
         <br>
 
-        <div class="bg-white shadow-md rounded p-4">
             <ul id="task-list">
                 {% for task in tasks %}
                     <li class="flex justify-between items-center py-2 border-b task-item">
@@ -35,13 +38,13 @@
                         <form action="{% url 'task_list' %}" method="post" style="display:inline;">
                             {% csrf_token %}
                             <input type="hidden" name="complete_task_id" value="{{ task.id }}">
-                            <button type="submit" class="mr-4 relative">
+                            <button type="submit" class="mr-4 relative ">
                                 <!-- Cercle que es fa verd amb hover i mostra el tick -->
                                 <span class="flex items-center justify-center w-5 h-5 rounded-full border-2 border-gray-500 
                                              transition duration-200 hover:bg-green-500 hover:border-green-500">
                                     <!-- Icona de tick de Flowbite que ocupa tot el cercle -->
                                     
-                                    <svg class="w-full h-full text-transparent transition duration-200 hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <svg class="w-full h-full text-transparent transition duration-200 hover:text-white " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
                                       </svg>
                                       
@@ -50,19 +53,139 @@
                         </form>
                         <span class="text-lg 'line-through text-gray-500' if task.completed else '' ">{{ task.title }}</span>
                         <!-- Només el botó d'editar -->
-                        <a href="{% url 'edit_task' task.id %}" class="text-blue-500 hover:underline">Edita</a>
+                        <a href="{% url 'edit_task' task.id %}" class="text-blue-500 hover:underline">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                            </svg>
+                        </a>
                     </li>
                 {% empty %}
-                    <p class="text-center text-gray-600">No hi ha tasques per mostrar.</p>
+                    <p class="text-center text-gray-600">No tasks to show.</p>
                 {% endfor %}
             </ul>
             <div class="mt-4">
-                <a href="{% url 'add_task' %}" class="block text-center text-white bg-blue-500 py-2 rounded">Afegeix Tasca</a>
+                <a href="{% url 'add_task' %}" class="block text-center text-white bg-blue-500 py-2 rounded">Add Task</a>
             </div>
         </div>
     </div>
 
-      
+    <script>
+        // Animació inicial de les tasques
+        window.onload = function () {
+            gsap.from('.task-item', {
+                opacity: 0,
+                x: 20,
+                stagger: 0.1,
+                duration: 0.5,
+            });
+        };
+    
+        // Cerca dinàmica
+        async function searchTasks(query) {
+            try {
+                const response = await fetch(`/?q=${encodeURIComponent(query)}`, {
+                    headers: { 'x-requested-with': 'XMLHttpRequest' },
+                });
+    
+                if (!response.ok) {
+                    console.error('Error en la petició:', response.status);
+                    return;
+                }
+    
+                const data = await response.json();
+                const taskList = document.getElementById('task-list');
+    
+                // Neteja la llista amb una animació suau
+                gsap.to('.task-item', {
+                    opacity: 0,
+                    y: -20,
+                    stagger: 0.1,
+                    duration: 0.3,
+                    onComplete: () => {
+                        taskList.innerHTML = '';
+    
+                        if (data.tasks.length === 0) {
+                            taskList.innerHTML = '<p class="text-center text-gray-600">No tasks to show.</p>';
+                            return;
+                        }
+    
+                        data.tasks.forEach(task => {
+                            const listItem = document.createElement('li');
+                            listItem.className = "flex justify-between items-center py-2 border-b task-item";
+    
+                            listItem.innerHTML = `
+                                <form action="/" method="post" style="display:inline;">
+                                    <button type="submit" class="mr-4 complete-button">
+                                        <span class="flex items-center justify-center w-5 h-5 rounded-full border-2 border-gray-500 hover:bg-green-500">
+                                            <svg class="w-full h-full text-transparent transition duration-200 hover:text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </form>
+                                <span class="text-lg ${task.completed ? 'line-through text-gray-500' : ''}">${task.title}</span>
+                                <a href="/edit/${task.id}/" class="text-blue-500 hover:underline">Edita</a>
+                            `;
+    
+                            taskList.appendChild(listItem);
+                        });
+    
+                        gsap.from('.task-item', {
+                            opacity: 0,
+                            y: 20,
+                            stagger: 0.1,
+                            duration: 0.5,
+                        });
+                    },
+                });
+            } catch (error) {
+                console.error('Error durant la petició AJAX:', error);
+            }
+        };
+    
+        // Feedback visual al camp de cerca
+        const searchBox = document.getElementById('search-box');
+        searchBox.addEventListener('focus', () => {
+            gsap.to(searchBox, { scale: 1.05, duration: 0.2, boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" });
+        });
+        searchBox.addEventListener('blur', () => {
+            gsap.to(searchBox, { scale: 1, duration: 0.2, boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" });
+        });
+
+        // Animació hover per al botó d'editar
+        document.querySelectorAll('.text-blue-500').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                // Mou l'icona cap amunt i canvia el color
+                gsap.to(button.querySelector('svg'), { y: -5, scale: 1.1, color: "#2563eb", duration: 0.2 });
+            });
+            button.addEventListener('mouseleave', () => {
+                // Torna a la posició inicial i mida normal
+                gsap.to(button.querySelector('svg'), { y: 0, scale: 1, color: "#000000", duration: 0.2 });
+            });
+        });
+
+        // Animacions hover i clic per al botó de marcar com a completada
+        document.querySelectorAll('button[type="submit"]').forEach(button => {
+            const circle = button.querySelector('span');
+            const tick = button.querySelector('svg');
+
+            // Animació en hover
+            button.addEventListener('mouseenter', () => {
+                gsap.to(circle, { scale: 1.1, backgroundColor: "#4caf50", borderColor: "#4caf50", duration: 0.1 }); // Amplia el cercle i canvia a verd
+                gsap.to(tick, { color: "#ffffff", duration: 0.2 }); // Fa el tick visible
+            });
+
+            button.addEventListener('mouseleave', () => {
+                gsap.to(circle, { scale: 1, backgroundColor: "transparent", borderColor: "#6b7280", duration: 0.1 }); // Torna a l'estat original
+                gsap.to(tick, { color: "transparent", duration: 0.2 }); // Amaga el tick
+            });
+
+        });
+
+    </script>
+    
+    
+
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </body>
 </html>

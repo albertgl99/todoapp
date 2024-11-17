@@ -3,18 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afegeix Tasca</title>
+    <title>Todo App</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
-    <div class="w-full max-w-md">
-        <h1 class="text-3xl font-bold text-center my-6">Afegeix una nova tasca</h1>
-        <form action="{% url 'add_task' %}" method="post" class="bg-white shadow-md rounded p-4">
-            {% csrf_token %}
-            <input type="text" name="title" placeholder="Nom de la tasca" required
-                   class="w-full p-2 border rounded mb-4">
-            <button type="submit" class="w-full text-white bg-blue-500 py-2 rounded">Afegir</button>
-        </form>
+    <div class="w-full max-w-md bg-white">
+
+        <div class="bg-gradient-to-l from-blue-200 to-blue-500 rounded p-4">
+            <a href="{% url 'task_list' %}" class="flex items-center gap-2 text-black hover:underline">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+                </svg>
+                <span>Go Back</span>
+            </a>            
+            <h1 class="text-3xl font-bold text-center my-6">Add Task</h1>
+        </div>
+
+        <div class="shadow-2xl rounded p-4">
+            <form action="{% url 'add_task' %}" method="post" class="bg-white rounded p-4">
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Task name" required
+                    class="w-full bg-white p-2 border rounded mb-4">
+                <button type="submit" class="w-full text-white bg-blue-500 py-2 rounded">Add</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
